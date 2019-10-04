@@ -1,0 +1,157 @@
+<html>
+<head>
+    <title>OpenEvse WiFi</title>
+    <style>
+        body { font-family: 'Arial'; }
+        div.title {font-weight: 600; color: gray; text-align: right; }
+        div.value {font-size: 20px; font-weight: 600; text-align: left; }
+		div.valueMax {font-size: 12px; font-weight: 300; text-align: left; }
+		span.valueMax {font-size: 12px; font-weight: 300; text-align: left; }
+        div.titleR {font-size: 10px; font-weight: 100; color: gray; text-align: right; }
+        div.valueR {font-size: 10px; font-weight: 100; text-align: left; }
+        td { text-align: center; }
+        tr.border_top td { border-top: 1pt solid black; }
+        tr.border_bottom td { border-bottom: 1pt solid black; }
+        div.log {font-size: 15px; font-weight: 100; }
+
+        button{ margin-top: 10px; margin-bottom: 10px;}
+    </style>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+        var counter = 10;
+
+        function setValue(id, value) { var s = document.getElementById(id); s.innerText = value; }
+
+        $(document).ready(function () { getData(); getLog(); });
+
+        function refresh() {
+            counter--;
+
+            if (counter > 0) {
+                setValue('refresh', counter);
+            }
+            else {
+                counter = 10;
+                getData();
+            }
+        };
+
+        function getData() {
+            $.getJSON('/sensors',
+                function (data) {
+					setValue('t', data.t);
+                    setValue('e', data.e);
+					setValue('p', data.p);
+					setValue('c', data.c);
+					setValue('v', data.v);
+					setValue('tIn', data.tIn);
+					setValue('tInMax', data.tInMax);
+					setValue('tOut', data.tOut);
+					setValue('tOutMax', data.tOutMax);
+                    setValue('uptime', data.uptime);
+                    setValue('dateTime', data.time);
+                    setValue('lastCorTime', data.lastCorTime);
+                    setValue('lastCorValue', data.lastCorValue);
+                }
+            );
+        };
+
+		function getLog() {
+		    $.get('/log',
+			    function(data) {
+			        setValue('log', data);
+		        }
+		    );
+		};
+
+        setInterval(refresh, 1000);
+
+        google.load('visualization', '1.0', { 'packages': ['corechart'] });
+        google.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            $.ajax({
+                type: "GET",
+                url: '/sarray',
+                success: function (receivedData) {
+
+					var interval = 30000;
+                    var today = new Date();
+                    today = new Date(today.getTime() - receivedData.svalues.length * interval);
+
+                    var data = new window.google.visualization.DataTable();
+                    data.addColumn('datetime', 'Date');
+                    data.addColumn('number', 'T1');
+                    
+                    for (var i = 0; i < receivedData.svalues.length; i++) {
+                        data.addRow([today, receivedData.svalues[i]]);
+                        today = new Date(today.getTime() + interval);
+                    }
+
+
+                    var width = 400;
+                    var height = 300;
+
+                    var options = {
+                        'width': width,
+                        'height': height,
+                        legend: 'none',
+                        hAxis: { format: 'HH:mm:ss' },
+                        'chartArea': {
+                            top: 10,
+                            left: 35,
+                            width: width - 35,
+                            height: height - 30
+                        },
+                        explorer: {
+                            actions: ['dragToZoom', 'rightClickToReset'],
+                            maxZoomIn: 0.01
+                        }
+                    };
+
+                    var formatter = new window.google.visualization.DateFormat({ pattern: 'HH:mm:ss' });
+                    formatter.format(data, 0);
+
+                    // Instantiate and draw our chart, passing in some options.
+                    var chart = new window.google.visualization.LineChart(document.getElementById('chart_div'));
+                    chart.draw(data, options);
+                },
+                dataType: "json",
+                traditional: true
+
+             });
+        }
+		
+    </script>
+</head>
+
+<body>
+    <table style="border-collapse: collapse; border-spacing: 0;">
+		<tr><td><div class="title">Energy total:</div></td><td><div id="t" class="value">000</div></td></tr>
+        <tr><td><div class="title">Energy:</div></td><td><div id="e" class="value">000</div></td></tr>
+		<tr><td><div class="title">Power:</div></td><td><div id="p" class="value">000</div></td></tr>
+		<tr><td><div class="title">Voltage:</div></td><td><div id="v" class="value">000</div></td></tr>
+		<tr><td><div class="title">Current:</div></td><td><div id="c" class="value">000</div></td></tr>
+		<tr><td><div class="title">Temperature in:</div></td><td><div id="tIn" class="value">000</div></td>
+			<td><div class="valueMax"><span class="valueMax">(</span><span id="tInMax">000</span><span class="valueMax">)</span></div></td></tr>
+		<tr><td><div class="title">Temperature out:</div></td><td><div id="tOut" class="value">000</div></td>
+			<td><div class="valueMax"><span class="valueMax">(</span><span id="tOutMax">000</span><span class="valueMax">)</span></div></td></tr>
+        <tr class="border_top"><td><div class="title">UpTime:</div></td><td colspan="2"><div id="uptime" class="value">0.00:00:00</div></td></tr>
+        <tr><td><div class="title">Time:</div></td><td colspan="2"><div id="dateTime" class="value" style="text-align: left"></div></td></tr>
+        <tr><td><div class="title">Last corr time:</div></td><td colspan="2"><div id="lastCorTime" class="value"></div></td></tr>
+        <tr class="border_bottom"><td><div class="title">Last corr value:</div></td><td colspan="2"><div id="lastCorValue" class="value"></div></td></tr>
+        <tr><td><div class="titleR">refresh in:</div></td><td colspan="2"><div id="refresh" class="valueR">9</div></td></tr>
+    </table>
+
+    <div id="chart_div" style="width:400px; height:300px"></div>
+	
+    <button onclick="drawChart();">Refresh chart</button> 
+    <button onclick="getLog();">Refresh log</button>
+
+    <div class="log" id="log"></div>
+</body>
+</html>

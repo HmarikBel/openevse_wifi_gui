@@ -23,5 +23,6 @@
     "view_models/WiFiScanViewModel.js",
     "view_models/WiFiConfigViewModel.js"
   ],
-  "style.css": [ "style.css" ]
+  "style.css": [ "style.css" ],
+  "hm.htm": [ "hm.htm" ]
 }

@@ -59,6 +59,12 @@ module.exports = {
       minify: htmlMinify
     }),
     new HtmlWebpackPlugin({
+      filename: "hm.html",
+      template: "./src/hm.htm",
+      inject: false,
+      minify: htmlMinify
+    }),
+    new HtmlWebpackPlugin({
       filename: "wifi_portal.html",
       template: "./src/wifi_portal.htm",
       inject: false,
