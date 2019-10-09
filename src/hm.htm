@@ -47,14 +47,14 @@
 					setValue('p', data.p);
 					setValue('c', data.c);
 					setValue('v', data.v);
-					setValue('tIn', data.tIn);
-					setValue('tInMax', data.tInMax);
-					setValue('tOut', data.tOut);
-					setValue('tOutMax', data.tOutMax);
+					setValue('t1', data.t1);
+					setValue('t1m', data.t1m);
+					setValue('t2', data.t2);
+                    setValue('t2m', data.t2m);
+                    setValue('t3', data.t3);
+					setValue('t3m', data.t3m);
                     setValue('uptime', data.uptime);
                     setValue('dateTime', data.time);
-                    setValue('lastCorTime', data.lastCorTime);
-                    setValue('lastCorValue', data.lastCorValue);
                 }
             );
         };
@@ -136,14 +136,14 @@
 		<tr><td><div class="title">Power:</div></td><td><div id="p" class="value">000</div></td></tr>
 		<tr><td><div class="title">Voltage:</div></td><td><div id="v" class="value">000</div></td></tr>
 		<tr><td><div class="title">Current:</div></td><td><div id="c" class="value">000</div></td></tr>
-		<tr><td><div class="title">Temperature in:</div></td><td><div id="tIn" class="value">000</div></td>
-			<td><div class="valueMax"><span class="valueMax">(</span><span id="tInMax">000</span><span class="valueMax">)</span></div></td></tr>
-		<tr><td><div class="title">Temperature out:</div></td><td><div id="tOut" class="value">000</div></td>
-			<td><div class="valueMax"><span class="valueMax">(</span><span id="tOutMax">000</span><span class="valueMax">)</span></div></td></tr>
+		<tr><td><div class="title">Temperature in:</div></td><td><div id="t1" class="value">000</div></td>
+			<td><div class="valueMax"><span class="valueMax">(</span><span id="t1m">000</span><span class="valueMax">)</span></div></td></tr>
+		<tr><td><div class="title">Temperature in2:</div></td><td><div id="t2" class="value">000</div></td>
+			<td><div class="valueMax"><span class="valueMax">(</span><span id="t2m">000</span><span class="valueMax">)</span></div></td></tr>
+        <tr><td><div class="title">Temperature out:</div></td><td><div id="t3" class="value">000</div></td>
+            <td><div class="valueMax"><span class="valueMax">(</span><span id="t3m">000</span><span class="valueMax">)</span></div></td></tr>
         <tr class="border_top"><td><div class="title">UpTime:</div></td><td colspan="2"><div id="uptime" class="value">0.00:00:00</div></td></tr>
-        <tr><td><div class="title">Time:</div></td><td colspan="2"><div id="dateTime" class="value" style="text-align: left"></div></td></tr>
-        <tr><td><div class="title">Last corr time:</div></td><td colspan="2"><div id="lastCorTime" class="value"></div></td></tr>
-        <tr class="border_bottom"><td><div class="title">Last corr value:</div></td><td colspan="2"><div id="lastCorValue" class="value"></div></td></tr>
+        <tr class="border_bottom"><td><div class="title">Time:</div></td><td colspan="2"><div id="dateTime" class="value" style="text-align: left"></div></td></tr>
         <tr><td><div class="titleR">refresh in:</div></td><td colspan="2"><div id="refresh" class="valueR">9</div></td></tr>
     </table>
 
